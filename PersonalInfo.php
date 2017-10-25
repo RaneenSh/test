@@ -39,6 +39,13 @@ session_start();
 		$pass = $_POST['password'];
 		$_SESSION['email'] = $_POST['email'];
 		$_SESSION['password'] = $_POST['password'];
+		$stmt = $conn->prepare('SELECT id FROM signup WHERE email = ?');
+		$stmt->bind_param('s', $_SESSION['email']);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		while ($row = $result->fetch_assoc()){
+			$_SESSION['id'] = $row['id'];
+		}
 	}
 	$stmt = $conn->prepare('SELECT * FROM signup WHERE email = ?');
 	$stmt->bind_param('s', $_SESSION['email']);
@@ -67,15 +74,57 @@ session_start();
 				echo "<div><h1>Personal Informaion</h1></div> <br>";
 				echo '<form action = "update.php" method = "post">
 				First Name:  <input name="first" value= '. $first.' type="text" > <br><br>
-				Last Name: <input name = "last" value = '. $last .' type = "text"> <br><br>
-				City: <select name="cars">
-				<option value= ' . $city . ' >' . $city . ' </option>
-				<option value="nablus">Nablus</option>
+				Last Name: <input name = "last" value = '. $last .' type = "text"> <br><br>';
+				$cities = array("Nablus", "Jenin", "Ramallah");
+				$total = count($cities);
+				echo 'City: <select name="city">';
+			//	foreach ($cities as $c){
+					for ($i = 0; $i < count($cities); $i++){
+						if ($cities[$i] == $city)
+							echo '<option selected value =' . $cities[$i] . '>' . $cities[$i] . '</option>';
+						else
+							echo '<option value =' . $cities[$i] . '>' . $cities[$i] . '</option>';
+					}
+			//	}
+			//	echo '<option selected>' . $city . ' </option>';		
+              /*  foreach( $cities as $item)
+				{
+					
+				echo '<option value="' . strtoupper($item) . '">' . $item . '</option>'; 
+				}*/				
+			/*	for ($count = 0; $count < $total; $count++){
+						$selected = '';
+					if ($cities[$count] != $city){
+					//	$selected = 'selected';
+				//	}
+						//echo "suha";
+						//echo $cities[$count];
+					//	echo $select;
+						echo '<option value = ' . $cities[$count] . '>' . $cities[$count] . '</option>';
+						$selected = "";
+					}
+				}*/
+				
+			/*	<option value="nablus">Nablus</option>
 				<option value="jenin">Jenin</option>
-				<option value="ramallah">Ramallah</option>
+				<option value="ramallah">Ramallah</option>*/
+				echo'
 				</select><br><br>
 				<br><br>';
+			//	echo $selected;
+				$checkMale = "";
+				$checkFemale = "";
 				if ($gender == 'male'){
+					$checkMale = "checked";
+				}
+				else {
+					$checkFemale = "checked";
+				}
+				echo'
+					<input type="radio" name="gender" value="male"' . $checkMale . '> Male
+					<input type="radio" name="gender" value="female"' . $checkFemale . '> Female<br> 
+					<br><br>';
+			/*	if ($gender == 'male'){
 					echo'
 					<input type="radio" name="gender" value="male" checked> Male
 					<input type="radio" name="gender" value="female"> Female<br> 
@@ -85,7 +134,7 @@ session_start();
 					echo '<input type="radio" name="gender" value="male"> Male
 					<input type="radio" name="gender" value="female" checked> Female<br> 
 					<br><br>';
-				}
+				}*/
 				echo '<input type = "submit" name = "update" value = "update">';
 				echo '<br><br></form>';
 				echo '<form action="upload.php" method="post" enctype="multipart/form-data">

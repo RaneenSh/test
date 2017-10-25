@@ -30,10 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$imagename=$_FILES["uploadedimage"]["name"];
 		$target_path = "images/".$imagename;
 		if(move_uploaded_file($temp_name, $target_path)) {
-			$stmt = $conn->prepare("UPDATE  signup SET images_path = ? WHERE password = ?");
+			$stmt = $conn->prepare("UPDATE  signup SET images_path = ? WHERE id = ?");
 			$pass = $_SESSION['password'];
 			$password = crypt($pass, 123);
-			$stmt->bind_param("ss", $target_path, $password);
+			$stmt->bind_param("ss", $target_path, $_SESSION['id']);
 			$stmt->execute();
 		}	
 	}

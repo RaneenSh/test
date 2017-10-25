@@ -91,6 +91,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					$stmt->bind_param("sssssss", $fname, $lname, $email, $password, $city, $gender, $image);
 					$stmt->execute();
 					echo "The account created successfully<br>";
+					echo '<script language="javascript">';
+					echo 'alert("account successfully created")';
+					echo '</script>';
 					$stmt->close();
 				}
 			}
